@@ -1,0 +1,131 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+{% block 'head' %}
+
+    <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
+    <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block 'body' %}
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <div class="col-md-5">
+                <p class="fonte-destaque">Suas contas</p>
+                <hr>
+
+                <div class="contas">
+                {% if contas %}
+                    {% for conta in contas %}
+                    <div class="lista-contas-main">
+                        <span><img width="10%" src="{{conta.icone.url}}">&nbsp&nbsp{{conta}}</span>
+                
+                        <span class="total-conta positivo ">R$ {{conta.valor}}&nbsp&nbsp&nbsp
+                            <a href="{% url 'deletar_banco' conta.id %}"><img src="{% static 'perfil/img/exit.png' %}"> </a>
+                        </span>
+                    </div>
+                    <br>
+                    {% endfor %}
+                {% else %}
+                <div class="lista-contas-main">
+                        <span><img width="10%" src="{% static 'perfil/img/exit.png' %}">&nbsp&nbspSem Conta Cadastrada</span>
+                
+                        <span class="total-conta positivo ">R$ 0&nbsp&nbsp&nbsp
+                            <img src="{% static 'perfil/img/exit.png' %}">
+                        </span>
+                    </div>
+                    <br>
+                {% endif %}
+                </div>
+
+                <hr>
+                <span class="fonte-destaque">Total</span>
+                <span class="positivo total-conta font-destaque">R$ {% if contas %} {{ total_contas }} 
+                {% else %} 0 {% endif %} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
+            </div>
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-5">
+                <p class="fonte-destaque">Nova conta</p>
+                
+                <form action="{% url 'cadastrar_banco' %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
+                    <label>Apelido</label>
+                    <input type="text" name="apelido" class="form-control" placeholder="" required>
+                    <br>
+                    <label>Banco</label>
+                    <select name="banco" class="form-select" required>
+                        {% if banco_choices %}
+                        {% for choice in banco_choices %}
+                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <br>
+                    <label>Tipo</label>
+                    <select name="tipo" class="form-select" required>
+                        {% if tipo_choices %}
+                        {% for choice in tipo_choices %}
+                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                    <br>
+                    <label>Valor</label>
+                    <input type="number" name="valor" class="form-control" pattern="[0-9]+([,\.][0-9]+)?" min="0" step="any" placeholder="0,00">
+                    <br>
+                    <input type="file" placeholder="Ícone" name="icone" required>
+                    <br>
+                    <br>
+                    <input style="width: 100%" type="submit" class="botao-principal">
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-5">
+                <span class="fonte-destaque">Nova categoria</span>
+
+                <form action="{% url 'cadastrar_categoria' %}" method="POST">{% csrf_token %}
+                    <label>Categoria</label>
+                    <input type="text" name="categoria" class="form-control">
+                    <br>
+
+                    <input type="checkbox" name="essencial" value="essencial"><label class="positivo">&nbspEssencial</label>
+                    <br>
+                    <br>
+                    <input style="width: 100%" type="submit" class="botao-principal" value="Adicionar">
+                </form>
+            </div>
+
+            <div class="col-md-2">
+            </div>
+
+            <div class="col-md-5">
+                <span class="fonte-destaque">Suas categoria</span>
+                <br>
+                <div class="contas">
+
+                    
+                        <div class="lista-contas-main">
+                            <span>Lazer</span>
+
+                            <span class="total-conta"><a href="#"><img src="#"></a></span>
+                        </div>
+                        <br>
+                   
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
