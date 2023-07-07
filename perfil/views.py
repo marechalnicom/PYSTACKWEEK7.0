@@ -2,21 +2,33 @@ from django.shortcuts import render, redirect
 from .models import Conta, Categoria
 from django.contrib import messages
 from django.contrib.messages import constants
-from django.db.models import Sum
+from .utils import calcula_total, formata_float
 
 def home(request):
     contas = Conta.objects.all()
-    saldo_total = 0#calcula_total(contas, 'valor')
-    return render(request, 'home.html', {'contas': contas, 'saldo_total': saldo_total,})
+    if contas.exists():
+        saldo_total = calcula_total(contas, 'valor')
+        #saldo_total = contas.aggregate(Sum('valor'))
+        saldo_total = formata_float(saldo_total)
+        for conta in contas:
+            conta.valor = formata_float(conta.valor)
+    else:        
+        saldo_total = "0,00"
+    
+    context = {
+        'contas': contas,
+        'saldo_total': saldo_total,
+        }
+    return render(request, 'home.html', context)
 
 def gerenciar(request):
     contas = Conta.objects.all()
     categorias = Categoria.objects.all()
     if contas.exists():
-        total_contas = contas.aggregate(Sum('valor'))
-        total_contas = f"{total_contas['valor__sum']:_.2f}".replace('.',',').replace('_','.')
+        total_contas = calcula_total(contas, 'valor')#contas.aggregate(Sum('valor'))
+        total_contas = formata_float(total_contas)
         for conta in contas:
-            conta.valor = f'{conta.valor:_.2f}'.replace('.',',').replace('_','.')
+            conta.valor = formata_float(conta.valor)
     else:        
         total_contas = "0,00"
     context = {
@@ -61,7 +73,7 @@ def deletar_banco(request, id):
 def cadastrar_categoria(request):
     nome = request.POST.get('categoria')
     essencial = bool(request.POST.get('essencial'))
-    if len(nome.strip()) == 0 or isinstance(essencial,bool):
+    if len(nome.strip()) == 0 or not isinstance(essencial,bool):
         messages.add_message(request, constants.ERROR, 'Preencha todos os campos')
         return redirect('/perfil/gerenciar/')
     categoria = Categoria(
@@ -73,9 +85,9 @@ def cadastrar_categoria(request):
     return redirect('/perfil/gerenciar/')
 def update_categoria(request, id):
     categoria = Categoria.objects.get(id=id)
+    if categoria:
+        categoria.essencial = not categoria.essencial
 
-    categoria.essencial = not categoria.essencial
-
-    categoria.save()
+        categoria.save()
 
     return redirect('/perfil/gerenciar/')

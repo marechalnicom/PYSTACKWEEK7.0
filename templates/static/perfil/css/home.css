@@ -34,6 +34,12 @@
     border-radius: 10px;
 
 }
+.lista-conta-main{
+    background-color: var(--main-color);
+    padding: 8px;
+    border-radius: 10px;
+
+}
 .total-conta{
     color: #B9F1D6;
     font-weight: 200;

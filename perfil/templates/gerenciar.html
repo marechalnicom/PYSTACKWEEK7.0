@@ -24,7 +24,7 @@
                 <div class="contas">
                 {% if contas %}
                     {% for conta in contas %}
-                    <div class="lista-contas-main">
+                    <div class="lista-conta-main">
                         <span><img width="10%" src="{{conta.icone.url}}">&nbsp&nbsp{{conta}}</span>
                 
                         <span class="total-conta positivo ">R$ {{conta.valor}}&nbsp&nbsp&nbsp
@@ -114,15 +114,28 @@
                 <span class="fonte-destaque">Suas categoria</span>
                 <br>
                 <div class="contas">
+                    <h5>
+                        <span>Categoria</span>
+                        <span class="float-end">Essencial</span>
+                    </h5>
+                    {% if categorias %}
+                        {% for categoria in categorias %}
+                        <div class="lista-conta-main">
+                            <span>{{ categoria }}</span>
 
-                    
-                        <div class="lista-contas-main">
-                            <span>Lazer</span>
-
-                            <span class="total-conta"><a href="#"><img src="#"></a></span>
+                            <span class="total-conta">
+                            <a href="{% url 'update_categoria' categoria.id %}">
+                            <img src="
+                            {% if categoria.essencial %}
+                            {% static 'perfil/img/check.png' %}
+                            {% else %}
+                            {% static 'perfil/img/exit.png' %}
+                            {% endif %}">
+                            </a></span>
                         </div>
                         <br>
-                   
+                   {% endfor %}
+                   {% endif %}
                     
                 </div>
             </div>
