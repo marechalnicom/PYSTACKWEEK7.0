@@ -31,9 +31,11 @@
                         <div class="col-md">
                             <label>Categoria</label>
                             <select name="categoria" class="form-select">
+                                {% if categorias %}
                                 {% for categoria in categorias %}
                                     <option value="{{categoria.id}}">{{categoria}}</option>
                                 {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
                     </div>
@@ -44,19 +46,24 @@
                     <div class="row">
                         <div class="col-md">
                             <label>Data</label>  
-                            <input name="data" type="date" class="form-control">
+                            <input name="data" type="date" class="form-control" value="{% now 'Y-m-d' %}">
                         </div>
 
                         <div class="col-md">
                             <label>Conta</label>
                             <select name="conta" class="form-select">
-                                <option value="1">Nubank</option>
+                                {% if contas %}
+                                {% for conta in contas %}
+                                    <option value="{{conta.id}}">{{conta}}</option>
+                                {% endfor %}
+                                {% endif %}
+                                
                             </select>
                         </div>
                     </div>
                     <br>
-                    <input type="radio" name="tipo" value="E"> <label class="positivo">Entrada</label>
-                    <input type="radio" name="tipo" value="S"> <label class="negativo">Saída</label>
+                    <input type="radio" name="tipo" value="E" id="entrada"> <label for="entrada" class="positivo">Entrada</label>
+                    <input type="radio" name="tipo" value="S" id="saida"> <label for="saida" class="negativo">Saída</label>
                     <br>
                     <br>
                     <input type="submit" style="width:40%;" class="botao-principal">
